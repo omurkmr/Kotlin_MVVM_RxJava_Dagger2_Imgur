@@ -1,11 +1,13 @@
 package com.omurkumru.mobilab.di.modules
 
+import com.omurkumru.mobilab.BuildConfig
 import com.omurkumru.mobilab.data.source.remote.ApiInterface
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.Retrofit.Builder
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -17,7 +19,10 @@ class NetModule(private val baseUrl: String) {
 
     @Provides
     @Singleton
-    fun providesOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
+    fun providesOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            }).build()
 
     @Provides
     @Singleton
