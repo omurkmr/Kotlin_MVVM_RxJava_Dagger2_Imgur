@@ -14,10 +14,7 @@ import com.omurkumru.mobilab.R
 import com.omurkumru.mobilab.data.model.MainImage
 import com.omurkumru.mobilab.ui.about.AboutActivity
 import com.omurkumru.mobilab.ui.adapter.ImageAdapter
-import com.omurkumru.mobilab.utils.CachePref
-import com.omurkumru.mobilab.utils.CacheTypeConstants
-import com.omurkumru.mobilab.utils.SectionConstants
-import com.omurkumru.mobilab.utils.SectionPref
+import com.omurkumru.mobilab.utils.*
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
@@ -25,11 +22,15 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    var cacheOption = arrayOf(CacheTypeConstants.inMemory, CacheTypeConstants.onDisk)
+    var cacheOption = arrayOf(CacheTypeConstants.IN_MEMORY, CacheTypeConstants.ON_DISK)
     var sectionOption = arrayOf(SectionConstants.HOT, SectionConstants.TOP, SectionConstants.USER)
+    var sortOption = arrayOf(SortTypeConstants.VIRAL, SortTypeConstants.TOP, SortTypeConstants.TIME, SortTypeConstants.RISING)
+    var windowOption = arrayOf(WindowTypeConstants.DAY, WindowTypeConstants.WEEK, WindowTypeConstants.MONTH, WindowTypeConstants.ALL)
 
     lateinit var sectionArrayAdapter: ArrayAdapter<String>
     lateinit var cacheArrayAdapter: ArrayAdapter<String>
+    lateinit var sortArrayAdapter: ArrayAdapter<String>
+    lateinit var windowArrayAdapter: ArrayAdapter<String>
     lateinit var imageAdapter: ImageAdapter
 
     @Inject
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
 
         setAdapter()
         setListener()
+
+        getImages()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -75,9 +78,13 @@ class MainActivity : AppCompatActivity() {
     private fun setAdapter() {
         cacheArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cacheOption)
         sectionArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sectionOption)
+        sortArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortOption)
+        windowArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, windowOption)
 
         cacheArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sectionArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sortArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        windowArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         imgurImage_GridView.numColumns = 2
     }
 
@@ -94,8 +101,8 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        0 -> CachePref.cachePrefType = CacheTypeConstants.inMemory
-                        1 -> CachePref.cachePrefType = CacheTypeConstants.onDisk
+                        0 -> CachePref.cachePrefType = CacheTypeConstants.IN_MEMORY
+                        1 -> CachePref.cachePrefType = CacheTypeConstants.ON_DISK
                     }
                 }
             }
@@ -115,21 +122,66 @@ class MainActivity : AppCompatActivity() {
                         1 -> SectionPref.sectionPrefType = SectionConstants.TOP
                         2 -> SectionPref.sectionPrefType = SectionConstants.USER
                     }
-                    getImages(SectionPref.sectionPrefType, viral_SW.isChecked)
+                    getImages()
                 }
             }
             prompt = "Preferred Section"
         }
 
+        with(sort_SP)
+        {
+            adapter = sortArrayAdapter
+            setSelection(0, false)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    when (position) {
+                        0 -> SortPref.sortPrefType = SortTypeConstants.VIRAL
+                        1 -> SortPref.sortPrefType = SortTypeConstants.TOP
+                        2 -> SortPref.sortPrefType = SortTypeConstants.TIME
+                        3 -> SortPref.sortPrefType = SortTypeConstants.RISING
+                    }
+                    getImages()
+                }
+            }
+            prompt = "Preferred Sort"
+        }
+
+        with(window_SP)
+        {
+            adapter = windowArrayAdapter
+            setSelection(0, false)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    when (position) {
+                        0 -> WindowPref.windowPrefType = WindowTypeConstants.DAY
+                        1 -> WindowPref.windowPrefType = WindowTypeConstants.WEEK
+                        2 -> WindowPref.windowPrefType = WindowTypeConstants.MONTH
+                        3 -> WindowPref.windowPrefType = WindowTypeConstants.ALL
+                    }
+                    getImages()
+                }
+            }
+            prompt = "Preferred Window"
+        }
+
         with(viral_SW)
         {
             setOnClickListener {
-                getImages(SectionPref.sectionPrefType, viral_SW.isChecked)
+                getImages()
             }
         }
     }
 
-    fun getImages(section: String, showViral: Boolean) {
-        mainViewModel.getGalleryImages(section, showViral)
+    fun getImages() {
+        val section = SectionPref.sectionPrefType
+        val sort = SortPref.sortPrefType
+        val window = WindowPref.windowPrefType
+        val showViral = viral_SW.isChecked
+
+        mainViewModel.getGalleryImages(section, sort, window, showViral)
     }
 }

@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 class MainRepository @Inject constructor(val apiInterface: ApiInterface, val utils: Utils) {
 
-    fun getGalleryImagesFromApi(section: String = "hot", showViral: Boolean = true): Observable<RawGalleryResponse> {
-        return apiInterface.getGallery(section, showViral)
+    fun getGalleryImagesFromApi(section: String = "hot", sort: String = "viral", window: String = "day", showViral: Boolean = true): Observable<RawGalleryResponse> {
+        return apiInterface.getGallery(section, sort, window, showViral)
     }
 
 }

@@ -19,19 +19,51 @@ class SectionConstants {
 
 class CacheTypeConstants {
     companion object {
-        const val inMemory = "inMemory"
-        const val onDisk = "onDisk"
+        const val IN_MEMORY = "in Memory"
+        const val ON_DISK = "on Disk"
     }
 }
 
+class SortTypeConstants {
+    companion object {
+        const val VIRAL = "viral"
+        const val TOP = "top"
+        const val TIME = "time"
+        const val RISING = "rising"
+    }
+}
+
+class WindowTypeConstants {
+    companion object {
+        const val DAY = "day"
+        const val WEEK = "week"
+        const val MONTH = "month"
+        const val YEAR = "year"
+        const val ALL = "all"
+    }
+}
+
+
 class CachePref {
     companion object {
-        var cachePrefType: String = CacheTypeConstants.inMemory
+        var cachePrefType: String = CacheTypeConstants.IN_MEMORY
     }
 }
 
 class SectionPref {
     companion object {
         var sectionPrefType: String = SectionConstants.HOT
+    }
+}
+
+class SortPref {
+    companion object {
+        var sortPrefType: String = SortTypeConstants.VIRAL
+    }
+}
+
+class WindowPref {
+    companion object {
+        var windowPrefType: String = WindowTypeConstants.DAY
     }
 }

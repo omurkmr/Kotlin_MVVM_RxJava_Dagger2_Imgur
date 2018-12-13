@@ -44,11 +44,11 @@ class ImageAdapter(context: Context, var imageList: List<MainImage>) : BaseAdapt
         val skipCacheMemory: Boolean
 
         when (diskCacheType) {
-            CacheTypeConstants.inMemory -> {
+            CacheTypeConstants.IN_MEMORY -> {
                 cacheDisk = DiskCacheStrategy.NONE
                 skipCacheMemory = false
             }
-            CacheTypeConstants.onDisk -> {
+            CacheTypeConstants.ON_DISK -> {
                 cacheDisk = DiskCacheStrategy.ALL
                 skipCacheMemory = true
             }

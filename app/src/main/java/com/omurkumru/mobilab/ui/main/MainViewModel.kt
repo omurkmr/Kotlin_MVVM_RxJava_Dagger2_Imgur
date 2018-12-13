@@ -17,7 +17,7 @@ class MainViewModel @Inject constructor(
     var imageResult: MutableLiveData<List<MainImage>> = MutableLiveData()
     lateinit var disposableObserver: DisposableObserver<RawGalleryResponse>
 
-    fun getGalleryImages(section: String, showViral: Boolean) {
+    fun getGalleryImages(section: String, sort: String, window: String, showViral: Boolean) {
 
         disposableObserver = object : DisposableObserver<RawGalleryResponse>() {
 
@@ -46,7 +46,7 @@ class MainViewModel @Inject constructor(
             override fun onError(e: Throwable) {}
         }
 
-        mainRepository.getGalleryImagesFromApi(section, showViral)
+        mainRepository.getGalleryImagesFromApi(section, sort, window, showViral)
                 //making rest requests so using io fits
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

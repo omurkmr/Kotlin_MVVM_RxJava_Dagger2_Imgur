@@ -12,6 +12,6 @@ import retrofit2.http.Query
 interface ApiInterface {
 
     @Headers("Authorization: Client-ID ${ImgurConstants.CLIENT_ID}")
-    @GET("gallery/{section}")
-    fun getGallery(@Path("section") section: String, @Query("showViral") showViral: Boolean): Observable<RawGalleryResponse>
+    @GET("gallery/{section}/{sort}/{window}")
+    fun getGallery(@Path("section") section: String, @Path("sort") sort: String, @Path("window") window: String, @Query("showViral") showViral: Boolean): Observable<RawGalleryResponse>
 }
