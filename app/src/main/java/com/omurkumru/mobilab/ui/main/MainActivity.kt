@@ -3,6 +3,7 @@ package com.omurkumru.mobilab.ui.main
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -19,13 +20,7 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-
 class MainActivity : AppCompatActivity() {
-
-    var cacheOption = arrayOf(CacheTypeConstants.IN_MEMORY, CacheTypeConstants.ON_DISK)
-    var sectionOption = arrayOf(SectionConstants.HOT, SectionConstants.TOP, SectionConstants.USER)
-    var sortOption = arrayOf(SortTypeConstants.VIRAL, SortTypeConstants.TOP, SortTypeConstants.TIME, SortTypeConstants.RISING)
-    var windowOption = arrayOf(WindowTypeConstants.DAY, WindowTypeConstants.WEEK, WindowTypeConstants.MONTH, WindowTypeConstants.ALL)
 
     lateinit var sectionArrayAdapter: ArrayAdapter<String>
     lateinit var cacheArrayAdapter: ArrayAdapter<String>
@@ -56,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         setAdapter()
         setListener()
 
+        //get list when app opened
         getImages()
     }
 
@@ -70,16 +66,26 @@ class MainActivity : AppCompatActivity() {
         // Handle presses on the action bar menu items
         when (item.itemId) {
             R.id.action_info -> startActivity(Intent(this, AboutActivity::class.java))
-
         }
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> topGroup.visibility = View.GONE
+            Configuration.ORIENTATION_PORTRAIT -> topGroup.visibility = View.VISIBLE
+            else -> topGroup.visibility = View.VISIBLE
+        }
+
+        super.onConfigurationChanged(newConfig)
+    }
+
     private fun setAdapter() {
-        cacheArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cacheOption)
-        sectionArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sectionOption)
-        sortArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortOption)
-        windowArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, windowOption)
+        cacheArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mainViewModel.cacheOption)
+        sectionArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mainViewModel.sectionOption)
+        sortArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mainViewModel.sortOption)
+        windowArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mainViewModel.windowOption)
 
         cacheArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sectionArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -101,8 +107,8 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        0 -> CachePref.cachePrefType = CacheTypeConstants.IN_MEMORY
-                        1 -> CachePref.cachePrefType = CacheTypeConstants.ON_DISK
+                        0 -> mainViewModel.setCacheType(CacheTypeConstants.IN_MEMORY)
+                        1 -> mainViewModel.setCacheType(CacheTypeConstants.ON_DISK)
                     }
                 }
             }
@@ -118,9 +124,9 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        0 -> SectionPref.sectionPrefType = SectionConstants.HOT
-                        1 -> SectionPref.sectionPrefType = SectionConstants.TOP
-                        2 -> SectionPref.sectionPrefType = SectionConstants.USER
+                        0 -> mainViewModel.setSectionType(SectionConstants.HOT)
+                        1 -> mainViewModel.setSectionType(SectionConstants.TOP)
+                        2 -> mainViewModel.setSectionType(SectionConstants.USER)
                     }
                     getImages()
                 }
@@ -137,10 +143,10 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        0 -> SortPref.sortPrefType = SortTypeConstants.VIRAL
-                        1 -> SortPref.sortPrefType = SortTypeConstants.TOP
-                        2 -> SortPref.sortPrefType = SortTypeConstants.TIME
-                        3 -> SortPref.sortPrefType = SortTypeConstants.RISING
+                        0 -> mainViewModel.setSortType(SortTypeConstants.VIRAL)
+                        1 -> mainViewModel.setSortType(SortTypeConstants.TOP)
+                        2 -> mainViewModel.setSortType(SortTypeConstants.TIME)
+                        3 -> mainViewModel.setSortType(SortTypeConstants.RISING)
                     }
                     getImages()
                 }
@@ -157,10 +163,10 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     when (position) {
-                        0 -> WindowPref.windowPrefType = WindowTypeConstants.DAY
-                        1 -> WindowPref.windowPrefType = WindowTypeConstants.WEEK
-                        2 -> WindowPref.windowPrefType = WindowTypeConstants.MONTH
-                        3 -> WindowPref.windowPrefType = WindowTypeConstants.ALL
+                        0 -> mainViewModel.setWindowType(WindowTypeConstants.DAY)
+                        1 -> mainViewModel.setWindowType(WindowTypeConstants.WEEK)
+                        2 -> mainViewModel.setWindowType(WindowTypeConstants.MONTH)
+                        3 -> mainViewModel.setWindowType(WindowTypeConstants.ALL)
                     }
                     getImages()
                 }

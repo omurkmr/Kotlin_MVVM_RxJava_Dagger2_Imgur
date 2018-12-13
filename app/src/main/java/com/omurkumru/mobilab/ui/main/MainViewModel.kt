@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel
 import com.omurkumru.mobilab.data.model.MainImage
 import com.omurkumru.mobilab.data.model.RawGalleryResponse
 import com.omurkumru.mobilab.data.source.MainRepository
+import com.omurkumru.mobilab.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
@@ -16,6 +17,11 @@ class MainViewModel @Inject constructor(
 
     var imageResult: MutableLiveData<List<MainImage>> = MutableLiveData()
     lateinit var disposableObserver: DisposableObserver<RawGalleryResponse>
+
+    var cacheOption = arrayOf(CacheTypeConstants.IN_MEMORY, CacheTypeConstants.ON_DISK)
+    var sectionOption = arrayOf(SectionConstants.HOT, SectionConstants.TOP, SectionConstants.USER)
+    var sortOption = arrayOf(SortTypeConstants.VIRAL, SortTypeConstants.TOP, SortTypeConstants.TIME, SortTypeConstants.RISING)
+    var windowOption = arrayOf(WindowTypeConstants.DAY, WindowTypeConstants.WEEK, WindowTypeConstants.MONTH, WindowTypeConstants.ALL)
 
     fun getGalleryImages(section: String, sort: String, window: String, showViral: Boolean) {
 
@@ -51,5 +57,21 @@ class MainViewModel @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(disposableObserver)
+    }
+
+    fun setCacheType(type: String) {
+        CachePref.cachePrefType = type
+    }
+
+    fun setSectionType(type: String) {
+        SectionPref.sectionPrefType = type
+    }
+
+    fun setSortType(type: String) {
+        SortPref.sortPrefType = type
+    }
+
+    fun setWindowType(type: String) {
+        WindowPref.windowPrefType = type
     }
 }
