@@ -5,7 +5,7 @@ import android.app.Application
 import com.omurkumru.mobilab.di.component.DaggerAppComponent
 import com.omurkumru.mobilab.di.modules.AppModule
 import com.omurkumru.mobilab.di.modules.NetModule
-import com.omurkumru.mobilab.utils.Constants
+import com.omurkumru.mobilab.utils.ImgurConstants
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -22,7 +22,7 @@ class Application : Application(), HasActivityInjector {
 
         DaggerAppComponent.builder()
                 .appModule(AppModule(this))
-                .netModule(NetModule(Constants.BASE_URL))
+                .netModule(NetModule(ImgurConstants.BASE_URL))
                 .build().inject(this)
     }
 
