@@ -1,15 +1,18 @@
 package com.omurkumru.mobilab.ui.main
 
-import android.R
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.omurkumru.mobilab.R.layout
+import com.omurkumru.mobilab.R
 import com.omurkumru.mobilab.data.model.MainImage
+import com.omurkumru.mobilab.ui.about.AboutActivity
 import com.omurkumru.mobilab.ui.adapter.ImageAdapter
 import com.omurkumru.mobilab.utils.CachePref
 import com.omurkumru.mobilab.utils.CacheTypeConstants
@@ -41,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layout.activity_main)
+        setContentView(R.layout.activity_main)
         AndroidInjection.inject(this)
 
         mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(
@@ -53,9 +56,25 @@ class MainActivity : AppCompatActivity() {
         setListener()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu to use in the action bar
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_item, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle presses on the action bar menu items
+        when (item.itemId) {
+            R.id.action_info -> startActivity(Intent(this, AboutActivity::class.java))
+
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setAdapter() {
-        cacheArrayAdapter = ArrayAdapter(this, R.layout.simple_spinner_item, cacheOption)
-        sectionArrayAdapter = ArrayAdapter(this, R.layout.simple_spinner_item, sectionOption)
+        cacheArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cacheOption)
+        sectionArrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sectionOption)
 
         cacheArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sectionArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
