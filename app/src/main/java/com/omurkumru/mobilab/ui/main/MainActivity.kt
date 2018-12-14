@@ -72,8 +72,16 @@ class MainActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
 
         when (newConfig.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> topGroup.visibility = View.GONE
-            Configuration.ORIENTATION_PORTRAIT -> topGroup.visibility = View.VISIBLE
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                topGroup.visibility = View.GONE
+                imgurImage_GridView.numColumns = 3
+
+            }
+            Configuration.ORIENTATION_PORTRAIT -> {
+                topGroup.visibility = View.VISIBLE
+                imgurImage_GridView.numColumns = 2
+
+            }
             else -> topGroup.visibility = View.VISIBLE
         }
 
