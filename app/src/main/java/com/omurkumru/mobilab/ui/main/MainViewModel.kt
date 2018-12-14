@@ -37,10 +37,10 @@ class MainViewModel @Inject constructor(
                 list?.forEach {
                     if (it.isAlbum!!) {
                         it.images?.forEach {
-                            imageList.add(MainImage(it.id, it.link, it.description))
+                            imageList.add(MainImage(it.id, it.link, it.title, it.description, it.ups, it.downs, it.score))
                         }
                     } else {
-                        imageList.add(MainImage(it.id, it.link, it.description))
+                        imageList.add(MainImage(it.id, it.link, it.title, it.description, it.ups, it.downs, it.score))
                     }
                 }
                 imageResult.postValue(imageList)
@@ -96,5 +96,9 @@ class MainViewModel @Inject constructor(
 
     override fun onCleared() {
         disposableObserver.dispose()
+    }
+
+    fun getImageResult(): List<MainImage>? {
+        return imageResult.value
     }
 }

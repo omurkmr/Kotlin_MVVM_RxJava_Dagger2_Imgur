@@ -8,7 +8,7 @@ class Image {
     @Json(name = "id")
     var id: String? = null
     @Json(name = "title")
-    var title: Any? = null
+    var title: String? = null
     @Json(name = "description")
     var description: String? = null
     @Json(name = "datetime")
@@ -60,12 +60,12 @@ class Image {
     @Json(name = "favorite_count")
     var favoriteCount: Any? = null
     @Json(name = "ups")
-    var ups: Any? = null
+    var ups: Int? = null
     @Json(name = "downs")
-    var downs: Any? = null
+    var downs: Int? = null
     @Json(name = "points")
     var points: Any? = null
     @Json(name = "score")
-    var score: Any? = null
+    var score: Int? = null
 
 }

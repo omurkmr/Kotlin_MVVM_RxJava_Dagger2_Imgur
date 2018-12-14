@@ -43,6 +43,12 @@ class WindowTypeConstants {
     }
 }
 
+class IntentConstants {
+    companion object {
+        const val IMAGE_DATA = "imageData"
+    }
+}
+
 
 class CachePref {
     companion object {

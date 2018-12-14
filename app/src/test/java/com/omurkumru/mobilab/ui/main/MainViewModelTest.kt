@@ -119,8 +119,8 @@ class MainViewModelTest {
 
     private fun expected(): List<MainImage>? {
 
-        val image1 = MainImage("1", "testLink", "testDesc")
-        val image2 = MainImage("2", "testLink2", "testDesc2")
+        val image1 = MainImage("1", "testLink", "title", "testDesc", 0, 0, 0)
+        val image2 = MainImage("2", "testLink2", "title2", "testDesc2", 1, 1, 1)
         return listOf(image1, image2)
     }
 
@@ -129,17 +129,30 @@ class MainViewModelTest {
         datum1.id = "1"
         datum1.isAlbum = false
         datum1.link = "testLink"
+        datum1.title = "title"
         datum1.description = "testDesc"
+        datum1.ups = 0
+        datum1.downs = 0
+        datum1.score = 0
+
 
         val datum2 = Datum()
         datum2.id = "2"
         datum2.isAlbum = false
         datum2.link = "testLink2"
+        datum2.title = "title2"
         datum2.description = "testDesc2"
+        datum2.ups = 1
+        datum2.downs = 1
+        datum2.score = 1
 
         val image1 = Image()
         image1.link = "testLink3"
         image1.description = "testDesc3"
+        image1.title = "title3"
+        image1.ups = 2
+        image1.downs = 2
+        image1.score = 2
         datum2.images = listOf(image1)
 
         val rawResponse = RawGalleryResponse()

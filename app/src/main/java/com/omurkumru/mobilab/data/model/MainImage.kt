@@ -1,3 +1,8 @@
 package com.omurkumru.mobilab.data.model
 
-data class MainImage(var id: String?, var url: String?, var description: String?)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class MainImage(var id: String?, var url: String?, var title: String?, var description: String?,
+                     var upVotes: Int?, var downVotes: Int?, var score: Int?) : Parcelable

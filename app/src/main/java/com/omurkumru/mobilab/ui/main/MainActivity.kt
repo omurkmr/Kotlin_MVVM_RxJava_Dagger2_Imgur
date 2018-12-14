@@ -13,7 +13,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.omurkumru.mobilab.R
 import com.omurkumru.mobilab.data.model.MainImage
+import com.omurkumru.mobilab.ui.ViewModelFactory
 import com.omurkumru.mobilab.ui.about.AboutActivity
+import com.omurkumru.mobilab.ui.detail.DetailActivity
 import com.omurkumru.mobilab.utils.*
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mainImageAdapter: MainImageAdapter
 
     @Inject
-    lateinit var mainViewModelFactory: MainViewModelFactory
+    lateinit var viewModelFactory: ViewModelFactory
     lateinit var mainViewModel: MainViewModel
 
 
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         AndroidInjection.inject(this)
 
-        mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(
+        mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(
                 MainViewModel::class.java)
 
         mainViewModel.imageResult.observe(this, nameObserver)
@@ -99,10 +101,19 @@ class MainActivity : AppCompatActivity() {
         sortArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         windowArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         imgurImage_GridView.numColumns = 2
+
     }
 
 
     private fun setListener() {
+        imgurImage_GridView.setOnItemClickListener { parent, v, position, id ->
+            run {
+                val intent = Intent(this@MainActivity, DetailActivity::class.java)
+                intent.putExtra(IntentConstants.IMAGE_DATA, mainViewModel.getImageResult()!![position])
+                startActivity(intent)
+            }
+        }
+
         with(cacheOptions_SP)
         {
             adapter = cacheArrayAdapter

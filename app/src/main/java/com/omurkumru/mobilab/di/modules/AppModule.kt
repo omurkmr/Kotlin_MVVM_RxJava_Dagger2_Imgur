@@ -2,7 +2,7 @@ package com.omurkumru.mobilab.di.modules
 
 import android.app.Application
 import android.arch.lifecycle.ViewModelProvider
-import com.omurkumru.mobilab.ui.main.MainViewModelFactory
+import com.omurkumru.mobilab.ui.ViewModelFactory
 import com.omurkumru.mobilab.utils.Utils
 import dagger.Module
 import dagger.Provides
@@ -18,8 +18,8 @@ class AppModule(val app: Application) {
 
     @Provides
     @Singleton
-    fun provideMainViewModelFactory(
-            factory: MainViewModelFactory): ViewModelProvider.Factory = factory
+    fun provideViewModelFactory(
+            factory: ViewModelFactory): ViewModelProvider.Factory = factory
 
     @Provides
     @Singleton
