@@ -2,6 +2,7 @@ package com.omurkumru.mobilab.ui.main
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.omurkumru.mobilab.data.model.MainImage
 import com.omurkumru.mobilab.data.model.RawGalleryResponse
 import com.omurkumru.mobilab.data.source.MainRepository
@@ -73,5 +74,27 @@ class MainViewModel @Inject constructor(
 
     fun setWindowType(type: String) {
         WindowPref.windowPrefType = type
+    }
+
+    fun getCacheDisk(): DiskCacheStrategy? {
+        when (CachePref.cachePrefType) {
+            CacheTypeConstants.IN_MEMORY -> {
+                return DiskCacheStrategy.NONE
+            }
+            CacheTypeConstants.ON_DISK -> {
+                return DiskCacheStrategy.ALL
+            }
+            else -> {
+                return DiskCacheStrategy.RESOURCE
+            }
+        }
+    }
+
+    fun getCacheMemory(): Boolean {
+        when (CachePref.cachePrefType) {
+            CacheTypeConstants.IN_MEMORY -> return false
+            CacheTypeConstants.ON_DISK -> return true
+            else -> return false
+        }
     }
 }

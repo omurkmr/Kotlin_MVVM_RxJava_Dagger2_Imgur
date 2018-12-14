@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter
 import com.omurkumru.mobilab.R
 import com.omurkumru.mobilab.data.model.MainImage
 import com.omurkumru.mobilab.ui.about.AboutActivity
-import com.omurkumru.mobilab.ui.adapter.ImageAdapter
 import com.omurkumru.mobilab.utils.*
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var cacheArrayAdapter: ArrayAdapter<String>
     lateinit var sortArrayAdapter: ArrayAdapter<String>
     lateinit var windowArrayAdapter: ArrayAdapter<String>
-    lateinit var imageAdapter: ImageAdapter
+    lateinit var mainImageAdapter: MainImageAdapter
 
     @Inject
     lateinit var mainViewModelFactory: MainViewModelFactory
@@ -34,8 +33,8 @@ class MainActivity : AppCompatActivity() {
 
 
     val nameObserver = Observer<List<MainImage>> { imageList ->
-        imageAdapter = ImageAdapter(this, imageList!!)
-        imgurImage_GridView.adapter = imageAdapter
+        mainImageAdapter = MainImageAdapter(this, imageList!!, mainViewModel)
+        imgurImage_GridView.adapter = mainImageAdapter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
