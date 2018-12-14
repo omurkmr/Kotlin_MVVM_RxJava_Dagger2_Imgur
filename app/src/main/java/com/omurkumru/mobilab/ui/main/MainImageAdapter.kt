@@ -37,7 +37,7 @@ class MainImageAdapter(context: Context, var imageList: List<MainImage>, var mai
         Glide.with(context!!)
                 .load(image.url)
                 .apply(RequestOptions.diskCacheStrategyOf((mainViewModel.getCacheDisk()!!)))
-                .apply(RequestOptions.skipMemoryCacheOf(mainViewModel.getCacheMemory()))
+                .apply(RequestOptions.skipMemoryCacheOf(mainViewModel.getSkipCacheMemory()))
                 .into(imageView.imgur_IV)
 
         return imageView

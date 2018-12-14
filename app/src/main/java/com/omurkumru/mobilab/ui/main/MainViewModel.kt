@@ -17,7 +17,28 @@ class MainViewModel @Inject constructor(
         private val mainRepository: MainRepository) : ViewModel() {
 
     var imageResult: MutableLiveData<List<MainImage>> = MutableLiveData()
-    lateinit var disposableObserver: DisposableObserver<RawGalleryResponse>
+
+    var disposableObserver = object : DisposableObserver<RawGalleryResponse>() {
+        var imageList: ArrayList<MainImage> = ArrayList()
+        override fun onComplete() {}
+        override fun onNext(images: RawGalleryResponse) {
+            val list = images.data
+            //we cannot get one type data list so we have create our own list
+            //onNext method fits perfectly on this situation
+            list?.forEach {
+                if (it.isAlbum!!) {
+                    it.images?.forEach {
+                        imageList.add(MainImage(it.id, it.link, it.description))
+                    }
+                } else {
+                    imageList.add(MainImage(it.id, it.link, it.description))
+                }
+            }
+            imageResult.postValue(imageList)
+        }
+
+        override fun onError(e: Throwable) {}
+    }
 
     var cacheOption = arrayOf(CacheTypeConstants.IN_MEMORY, CacheTypeConstants.ON_DISK)
     var sectionOption = arrayOf(SectionConstants.HOT, SectionConstants.TOP, SectionConstants.USER)
@@ -25,33 +46,6 @@ class MainViewModel @Inject constructor(
     var windowOption = arrayOf(WindowTypeConstants.DAY, WindowTypeConstants.WEEK, WindowTypeConstants.MONTH, WindowTypeConstants.ALL)
 
     fun getGalleryImages(section: String, sort: String, window: String, showViral: Boolean) {
-
-        disposableObserver = object : DisposableObserver<RawGalleryResponse>() {
-
-            var imageList: ArrayList<MainImage> = ArrayList()
-
-            override fun onComplete() {}
-
-            override fun onNext(images: RawGalleryResponse) {
-
-                val list = images.data
-                //we cannot get one type data list so we have create our own list
-                //onNext method fits perfectly on this situation
-                list?.forEach {
-                    if (it.isAlbum!!) {
-                        it.images?.forEach {
-                            imageList.add(MainImage(it.id, it.link, it.description))
-                        }
-                    } else {
-                        imageList.add(MainImage(it.id, it.link, it.description))
-                    }
-                }
-
-                imageResult.postValue(imageList)
-            }
-
-            override fun onError(e: Throwable) {}
-        }
 
         mainRepository.getGalleryImagesFromApi(section, sort, window, showViral)
                 //making rest requests so using io fits
@@ -77,24 +71,28 @@ class MainViewModel @Inject constructor(
     }
 
     fun getCacheDisk(): DiskCacheStrategy? {
-        when (CachePref.cachePrefType) {
+        return when (CachePref.cachePrefType) {
             CacheTypeConstants.IN_MEMORY -> {
-                return DiskCacheStrategy.NONE
+                DiskCacheStrategy.NONE
             }
             CacheTypeConstants.ON_DISK -> {
-                return DiskCacheStrategy.ALL
+                DiskCacheStrategy.ALL
             }
             else -> {
-                return DiskCacheStrategy.RESOURCE
+                DiskCacheStrategy.RESOURCE
             }
         }
     }
 
-    fun getCacheMemory(): Boolean {
-        when (CachePref.cachePrefType) {
-            CacheTypeConstants.IN_MEMORY -> return false
-            CacheTypeConstants.ON_DISK -> return true
-            else -> return false
+    fun getSkipCacheMemory(): Boolean {
+        return when (CachePref.cachePrefType) {
+            CacheTypeConstants.IN_MEMORY -> false
+            CacheTypeConstants.ON_DISK -> true
+            else -> false
         }
+    }
+
+    override fun onCleared() {
+        disposableObserver.dispose()
     }
 }

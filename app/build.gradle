@@ -65,6 +65,10 @@ dependencies {
     testImplementation "junit:junit:${rootProject.ext.junitVersion}"
     androidTestImplementation "com.android.support.test:runner:${rootProject.ext.testRunnerVersion}"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:${rootProject.ext.testEspressoVersion}"
+    testImplementation 'org.mockito:mockito-core:2.23.0'
+    testImplementation 'android.arch.core:core-testing:1.1.1'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0"
+    testImplementation 'org.mockito:mockito-inline:2.15.0'
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
