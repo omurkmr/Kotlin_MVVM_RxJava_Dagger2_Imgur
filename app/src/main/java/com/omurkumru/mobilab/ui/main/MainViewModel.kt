@@ -1,5 +1,6 @@
 package com.omurkumru.mobilab.ui.main
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -17,6 +18,8 @@ class MainViewModel @Inject constructor(
         private val mainRepository: MainRepository) : ViewModel() {
 
     var imageResult: MutableLiveData<List<MainImage>> = MutableLiveData()
+    var imageError: MutableLiveData<String> = MutableLiveData()
+    var imageLoader: MutableLiveData<Boolean> = MutableLiveData()
 
     lateinit var disposableObserver: DisposableObserver<RawGalleryResponse>
 
@@ -44,9 +47,14 @@ class MainViewModel @Inject constructor(
                     }
                 }
                 imageResult.postValue(imageList)
+                imageLoader.postValue(false)
+
             }
 
-            override fun onError(e: Throwable) {}
+            override fun onError(e: Throwable) {
+                imageError.postValue(e.message)
+                imageLoader.postValue(false)
+            }
         }
 
         mainRepository.getGalleryImagesFromApi(section, sort, window, showViral)
@@ -100,5 +108,17 @@ class MainViewModel @Inject constructor(
 
     fun getImageResult(): List<MainImage>? {
         return imageResult.value
+    }
+
+    fun imageResult(): LiveData<List<MainImage>> {
+        return imageResult
+    }
+
+    fun imageError(): LiveData<String> {
+        return imageError
+    }
+
+    fun imageLoader(): LiveData<Boolean> {
+        return imageLoader
     }
 }

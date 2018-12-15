@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.omurkumru.mobilab.R
 import com.omurkumru.mobilab.data.model.MainImage
 import com.omurkumru.mobilab.ui.ViewModelFactory
@@ -31,13 +32,10 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var utils: Utils
     lateinit var mainViewModel: MainViewModel
 
-
-    val nameObserver = Observer<List<MainImage>> { imageList ->
-        mainImageAdapter = MainImageAdapter(this, imageList!!, mainViewModel)
-        imgurImage_GridView.adapter = mainImageAdapter
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +45,25 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ViewModelProviders.of(this, viewModelFactory).get(
                 MainViewModel::class.java)
 
-        mainViewModel.imageResult.observe(this, nameObserver)
+        mainViewModel.imageResult().observe(this,
+                Observer<List<MainImage>> { imageList ->
+                    mainImageAdapter = MainImageAdapter(this, imageList!!, mainViewModel)
+                    imgurImage_GridView.adapter = mainImageAdapter
+                }
+        )
+
+        mainViewModel.imageError().observe(this, Observer<String> {
+            if (it != null) {
+                Toast.makeText(this, "Error occured = $it", Toast.LENGTH_LONG).show()
+            }
+        })
+
+        mainViewModel.imageLoader().observe(this, Observer<Boolean> {
+            if (it == false) {
+                progressBar.visibility = View.GONE
+                imgurImage_GridView.visibility = View.VISIBLE
+            }
+        })
 
         setAdapter()
         setListener()
@@ -206,6 +222,13 @@ class MainActivity : AppCompatActivity() {
         val window = WindowPref.windowPrefType
         val showViral = viral_SW.isChecked
 
-        mainViewModel.getGalleryImages(section, sort, window, showViral)
+        if (utils.isConnectedToInternet()) {
+            mainViewModel.getGalleryImages(section, sort, window, showViral)
+            progressBar.visibility = View.VISIBLE
+            imgurImage_GridView.visibility = View.INVISIBLE
+
+        } else {
+            Toast.makeText(this, "Has no connection", Toast.LENGTH_LONG).show()
+        }
     }
 }
